@@ -1,0 +1,34 @@
+{
+    "name": "hubleto/install",
+    "license": "MIT",
+    "description": "Install Hubleto for free.",
+    "homepage": "https://www.hubleto.eu",
+    "support": {
+        "issues": "https://github.com/hubleto/erp/issues",
+        "source": "https://github.com/hubleto/erp"
+    },
+    "keywords": ["hubleto", "crm", "erp", "application", "hub"],
+    "require": {
+        "hubleto/framework": "*",
+        "hubleto/erp": "*",
+        "hubleto/assets": "*",
+        "hubleto/react-ui": "*",
+
+        "hubleto/pay-by-square-encoder": "^1",
+        "defuse/php-encryption": "^2",
+        "ddeboer/imap": "^1",
+        "endroid/qr-code": "^6",
+        "dompdf/dompdf": "^3",
+        "erusev/parsedown": "^1",
+        "phpmailer/phpmailer": "^6"
+    },
+    "autoload": {
+        "psr-4": {
+            "HubletoProject\\EventListeners\\": "src/event-listeners",
+            "HubletoProject\\Cron\\": "src/crons",
+            "HubletoProject\\Report\\": "src/reports",
+            "HubletoProject\\Dependency\\": "src/dependencies"
+        }
+    },
+    "minimum-stability": "dev"
+}
