@@ -418,10 +418,10 @@
   .modal > .modal-inner { @apply flex flex-col w-full h-full; }
   .modal > .modal-inner > .modal-header { @apply flex items-center text-primary bg-gradient-to-b from-primary/5 to-white dark:to-black dark:text-white dark:bg-slate-900 dark:border-slate-800 items-baseline w-full justify-between p-2; }
   .modal > .modal-inner > .modal-header:not(.active) { @apply bg-gray-100 text-gray-500; }
-  .modal > .modal-inner > .modal-header:not(.active) * { @apply !text-gray-500; }
+  /* .modal > .modal-inner > .modal-header:not(.active) * { @apply !text-gray-500; } */
   .modal > .modal-inner > .modal-header > .modal-header-left { @apply flex gap-1; }
   .modal > .modal-inner > .modal-header > .modal-header-title { @apply flex gap-2 flex-1 text-sm md:text-xl px-4 min-w-0; }
-  .modal > .modal-inner > .modal-header > .modal-header-title h2 { @apply min-h-8 m-0 p-0 text-sm font-semibold tracking-widest md:text-xl text-primary break-words max-w-full dark:text-white; }
+  .modal > .modal-inner > .modal-header > .modal-header-title h2 { @apply min-h-8 m-0 p-0 text-sm text-primary tracking-widest md:text-xl break-words max-w-full dark:text-white; }
   .modal > .modal-inner > .modal-header > .modal-header-right { @apply flex gap-1 justify-end h-full; }
   .modal > .modal-inner > .modal-header .modal-header-buttons { @apply hidden md:flex flex-col; }
   .modal > .modal-inner > .modal-header .modal-header-buttons .btn { @apply border-none; }
