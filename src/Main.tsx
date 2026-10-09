@@ -218,7 +218,7 @@ try {
       globalThis.hubleto.init();
       globalThis.hubleto.renderReactElements();
       globalThis.hubleto.createThemeObserver();
-      globalThis.hubleto.registerModalShortcuts();
+      globalThis.hubleto.registerShortcuts();
     }
   });
 } catch (e) {
