@@ -45,10 +45,15 @@ if (fs.existsSync(vendorFolder) && fs.lstatSync(vendorFolder).isDirectory()) {
 
     if (fs.existsSync(vendorVendorFolder) && fs.lstatSync(vendorVendorFolder).isDirectory()) {
       fs.readdirSync(vendorVendorFolder).forEach(function(app) {
-        externalApps = [
-          ...externalApps,
-          ...findHubletoAppsInRepository(path.resolve(vendorFolder, vendor, app))
-        ];
+        const appFolder = path.resolve(vendorVendorFolder, app, 'src');
+        if (fs.existsSync(appFolder) && fs.lstatSync(appFolder).isDirectory()) {
+          const manifestFile = appFolder + '/manifest.yaml';
+          const loaderEntry = appFolder + '/Loader';
+
+          if (fs.existsSync(manifestFile) && fs.existsSync(loaderEntry + '.tsx')) {
+            externalApps.push(loaderEntry);
+          }
+        }
       });
     }
   });
@@ -90,18 +95,56 @@ export default {
     splitChunks: {
       cacheGroups: {
         community_apps: {
+          minSize: 0,
+          enforce: true,
           test: /[\\/]erp[\\/]apps[\\/]/,
-          name: 'community-apps',
+          name(module) {
+            const identifier = module.identifier();
+            const app = /[\\/]erp[\\/]apps[\\/](.*?)[\\/]/.exec(identifier)[1];
+            return `community/${app}`;
+          },
           chunks: 'all'
         },
         enterprise_apps: {
+          minSize: 0,
+          enforce: true,
           test: /[\\/]enterprise[\\/]apps[\\/]/,
-          name: 'enterprise-apps',
+          name(module) {
+            const identifier = module.identifier();
+            const app = /[\\/]enterprise[\\/]apps[\\/](.*?)[\\/]/.exec(identifier)[1];
+            console.log('module enterprise', identifier, app);
+            return `enterprise/${app}`;
+          },
+          chunks: 'all'
+        },
+        external_apps: {
+          minSize: 0,
+          enforce: true,
+          test: /[\\/]src[\\/]Components/,
+          name(module) {
+            const composerJsonFile = path.resolve(module.context, '..', '..') + '/composer.json';
+            const composer = JSON.parse(fs.readFileSync(composerJsonFile));
+            const psr4 = composer.autoload['psr-4'];
+            const namespace = Object.keys(psr4)[0]
+              .replaceAll('\\', '/')
+              .replace('Hubleto/App/External/', '')
+              .replace(/\/$/g, '')
+            ;
+
+            console.log('module external', composer, psr4, namespace);
+            return `external/${namespace}`;
+          },
           chunks: 'all'
         },
         custom_apps: {
+          minSize: 0,
+          enforce: true,
           test: /[\\/]src[\\/]apps[\\/]/,
-          name: 'custom-apps',
+          name(module) {
+            const identifier = module.identifier();
+            const app = /[\\/]src[\\/]apps[\\/](.*?)[\\/]/.exec(identifier)[1];
+            return `custom/${app}`;
+          },
           chunks: 'all'
         },
         react_ui: {
