@@ -64,20 +64,40 @@ console.log('Found ' + enterpriseApps.length + ' enterprise apps.');
 console.log('Found ' + externalApps.length + ' external apps.');
 console.log('Found ' + customApps.length + ' custom apps.');
 
+let appEntries = {};
+
+communityApps.map((app) => {
+  const appName = /\/(.*?)\/Loader/.exec(app)[1];
+  appEntries['community/' + appName] = { import: app, dependOn: 'main' };
+})
+
+enterpriseApps.map((app) => {
+  const appName = /\/(.*?)\/Loader/.exec(app)[1];
+  appEntries['enterprise/' + appName] = { import: app, dependOn: 'main' };
+})
+
+externalApps.map((app) => {
+  const composerJsonFile = path.resolve(app, '..', '..') + '/composer.json';
+  const composer = JSON.parse(fs.readFileSync(composerJsonFile));
+  const psr4 = composer.autoload['psr-4'];
+  const appName = Object.keys(psr4)[0]
+    .replaceAll('\\', '/')
+    .replace('Hubleto/App/External/', '')
+    .replace(/\/$/g, '')
+  ;
+  appEntries['external/' + appName] = { import: app, dependOn: 'main' };
+})
+
 export default {
   entry: {
-    main: [
-      './src/Main',
-      ...communityApps,
-      ...enterpriseApps,
-      ...externalApps,
-      ...customApps
-    ],
+    main: '../hubleto/src/assets/src/Main.tsx',
+    ...appEntries,
   },
   output: {
     path: path.resolve(__dirname, 'assets/compiled/js'),
+    publicPath: '/assets/',
     filename: '[name].js',
-    clean: true
+    chunkFilename: '[name].js',
   },
   module: {
     rules: [
@@ -92,77 +112,13 @@ export default {
     ],
   },
   optimization: {
+    runtimeChunk: 'single',            // one shared runtime, no duplicate bootstraps
     splitChunks: {
+      // delete your per-app cacheGroups; keep only shared code
       cacheGroups: {
-        community_apps: {
-          minSize: 0,
-          enforce: true,
-          test: /[\\/]erp[\\/]apps[\\/]/,
-          name(module) {
-            const identifier = module.identifier();
-            const app = /[\\/]erp[\\/]apps[\\/](.*?)[\\/]/.exec(identifier)[1];
-            return `community/${app}`;
-          },
-          chunks: 'all'
-        },
-        enterprise_apps: {
-          minSize: 0,
-          enforce: true,
-          test: /[\\/]enterprise[\\/]apps[\\/]/,
-          name(module) {
-            const identifier = module.identifier();
-            const app = /[\\/]enterprise[\\/]apps[\\/](.*?)[\\/]/.exec(identifier)[1];
-            console.log('module enterprise', identifier, app);
-            return `enterprise/${app}`;
-          },
-          chunks: 'all'
-        },
-        external_apps: {
-          minSize: 0,
-          enforce: true,
-          test: /[\\/]src[\\/]Components/,
-          name(module) {
-            const composerJsonFile = path.resolve(module.context, '..', '..') + '/composer.json';
-            const composer = JSON.parse(fs.readFileSync(composerJsonFile));
-            const psr4 = composer.autoload['psr-4'];
-            const namespace = Object.keys(psr4)[0]
-              .replaceAll('\\', '/')
-              .replace('Hubleto/App/External/', '')
-              .replace(/\/$/g, '')
-            ;
-
-            console.log('module external', composer, psr4, namespace);
-            return `external/${namespace}`;
-          },
-          chunks: 'all'
-        },
-        custom_apps: {
-          minSize: 0,
-          enforce: true,
-          test: /[\\/]src[\\/]apps[\\/]/,
-          name(module) {
-            const identifier = module.identifier();
-            const app = /[\\/]src[\\/]apps[\\/](.*?)[\\/]/.exec(identifier)[1];
-            return `custom/${app}`;
-          },
-          chunks: 'all'
-        },
-        react_ui: {
-          test: /[\\/]react-ui[\\/]/,
-          name: 'react-ui',
-          chunks: 'all'
-        },
-        external_apps: {
-          test: /[\\/]vendor[\\/]/,
-          name: 'external-apps',
-          chunks: 'all'
-        },
-        modules: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'modules',
-          chunks: 'all'
-        }
-      }
+        modules: { test: /[\\/]node_modules[\\/]/, name: 'modules', chunks: 'all', enforce: true },
+        reactUi: { test: /[\\/]hubleto[\\/]src[\\/]react-ui[\\/]/, name: 'react-ui', chunks: 'all', enforce: true },
+      },
     },
   },
   resolve: {
