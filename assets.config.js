@@ -1,12 +1,14 @@
-// const path = require('path');
-// const fs = require('fs');
-
 import * as path from 'path';
 import * as fs from 'fs';
 import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+const logCyan = (s) => console.log('\x1b[36m%s\x1b[0m', s);
+const logYellow = (s) => console.log('\x1b[33m%s\x1b[0m', s);
+const logGreen = (s) => console.log('\x1b[32m%s\x1b[0m', s);
+const logRed = (s) => console.log('\x1b[31m%s\x1b[0m', s);
 
 function findHubletoAppsInRepository(folder) {
   let apps = [];
@@ -59,21 +61,27 @@ if (fs.existsSync(vendorFolder) && fs.lstatSync(vendorFolder).isDirectory()) {
   });
 }
 
-console.log('Found ' + communityApps.length + ' community apps.');
-console.log('Found ' + enterpriseApps.length + ' enterprise apps.');
-console.log('Found ' + externalApps.length + ' external apps.');
-console.log('Found ' + customApps.length + ' custom apps.');
+logYellow(
+    'Found ' + communityApps.length + ' community, '
+    + enterpriseApps.length + ' enterprise, '
+    + externalApps.length + ' external and '
+    + customApps.length + ' custom apps.'
+);
 
-let appEntries = {};
+// ===== entries =====
+
+let entries = {
+  main: '../hubleto/src/assets/src/Main.tsx',
+};
 
 communityApps.map((app) => {
   const appName = /\/(.*?)\/Loader/.exec(app)[1];
-  appEntries['community/' + appName] = { import: app, dependOn: 'main' };
+  entries['community/' + appName] = { import: app, dependOn: 'main' };
 })
 
 enterpriseApps.map((app) => {
   const appName = /\/(.*?)\/Loader/.exec(app)[1];
-  appEntries['enterprise/' + appName] = { import: app, dependOn: 'main' };
+  entries['enterprise/' + appName] = { import: app, dependOn: 'main' };
 })
 
 externalApps.map((app) => {
@@ -85,51 +93,22 @@ externalApps.map((app) => {
     .replace('Hubleto/App/External/', '')
     .replace(/\/$/g, '')
   ;
-  appEntries['external/' + appName] = { import: app, dependOn: 'main' };
+  entries['external/' + appName] = { import: app, dependOn: 'main' };
 })
 
-export default {
-  entry: {
-    main: '../hubleto/src/assets/src/Main.tsx',
-    ...appEntries,
-  },
-  output: {
-    path: path.resolve(__dirname, 'assets/compiled/js'),
-    publicPath: '/assets/',
-    filename: '[name].js',
-    chunkFilename: '[name].js',
-  },
-  module: {
-    rules: [
-      {
-        test: /\.(js|mjs|jsx|ts|tsx)$/,
-        use: 'babel-loader',
-      },
-      {
-        test: /\.(scss|css)$/,
-        use: ['style-loader', 'css-loader', 'sass-loader'],
-      }
-    ],
-  },
-  optimization: {
-    runtimeChunk: 'single',            // one shared runtime, no duplicate bootstraps
-    splitChunks: {
-      // delete your per-app cacheGroups; keep only shared code
-      cacheGroups: {
-        modules: { test: /[\\/]node_modules[\\/]/, name: 'modules', chunks: 'all', enforce: true },
-        reactUi: { test: /[\\/]hubleto[\\/]src[\\/]react-ui[\\/]/, name: 'react-ui', chunks: 'all', enforce: true },
-      },
-    },
-  },
-  resolve: {
-    modules: [
-      path.resolve(__dirname, './node_modules'),
-    ],
-    extensions: ['.js', '.jsx', '.ts', '.tsx', '.scss', '.css'],
-    alias: {
-      '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
-      '@hubleto/react-ui': path.resolve(__dirname, 'node_modules/@hubleto/react-ui'),
-      '@hubleto/apps': path.resolve(__dirname, 'vendor/hubleto/erp/apps'),
-    },
-  }
-};
+// ===== outputPath =====
+const outputPath = path.resolve(__dirname, 'assets/compiled/js');
+
+// ===== modules =====
+const modules = [
+  path.resolve(__dirname, './node_modules'),
+];
+
+// ===== aliases =====
+const aliases = {
+  '@babel/runtime': path.resolve(__dirname, 'node_modules/@babel/runtime'),
+  '@hubleto/react-ui': path.resolve(__dirname, 'node_modules/@hubleto/react-ui'),
+  '@hubleto/apps': path.resolve(__dirname, 'vendor/hubleto/erp/apps'),
+}
+
+export function init() { return { entries, outputPath, aliases, modules } };
