@@ -33,7 +33,6 @@ function findHubletoAppsInRepository(folder) {
 }
 
 let communityApps = findHubletoAppsInRepository(path.resolve(__dirname, 'vendor/hubleto/erp/apps'))
-let enterpriseApps = findHubletoAppsInRepository(path.resolve(__dirname, 'vendor/hubleto/enterprise/apps'))
 let customApps = findHubletoAppsInRepository(path.resolve(__dirname, 'src/apps'))
 
 let externalApps = [];
@@ -63,7 +62,6 @@ if (fs.existsSync(vendorFolder) && fs.lstatSync(vendorFolder).isDirectory()) {
 
 logYellow(
     'Found ' + communityApps.length + ' community, '
-    + enterpriseApps.length + ' enterprise, '
     + externalApps.length + ' external and '
     + customApps.length + ' custom apps.'
 );
@@ -77,11 +75,6 @@ let entries = {
 communityApps.map((app) => {
   const appName = /\/(.*?)\/Loader/.exec(app)[1];
   entries['community/' + appName] = { import: app, dependOn: 'main' };
-})
-
-enterpriseApps.map((app) => {
-  const appName = /\/(.*?)\/Loader/.exec(app)[1];
-  entries['enterprise/' + appName] = { import: app, dependOn: 'main' };
 })
 
 externalApps.map((app) => {
