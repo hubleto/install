@@ -1,0 +1,118 @@
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE:-hubleto}
+      MARIADB_USER: ${DB_USERNAME:-hubleto}
+      MARIADB_PASSWORD: ${DB_PASSWORD:-hubleto}
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+      TZ: ${TZ:-UTC}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+
+  init:
+    image: hubleto-app:local
+    build:
+      context: .
+      target: app
+    restart: "no"
+    command: ["php", "docker/init.php"]
+    environment:
+      HUBLETO_URL: ${HUBLETO_URL:-http://localhost:8080}
+      HUBLETO_ACCOUNT_NAME: ${HUBLETO_ACCOUNT_NAME:-Hubleto}
+      HUBLETO_ADMIN_EMAIL: ${HUBLETO_ADMIN_EMAIL:-admin@example.com}
+      # Empty or unset generates a random password, shown in the init logs.
+      HUBLETO_ADMIN_PASSWORD: ${HUBLETO_ADMIN_PASSWORD:-}
+      HUBLETO_PACKAGES: ${HUBLETO_PACKAGES:-crm,marketing,sales,finance,help,maintenance}
+      DB_DATABASE: ${DB_DATABASE:-hubleto}
+      DB_USERNAME: ${DB_USERNAME:-hubleto}
+      DB_PASSWORD: ${DB_PASSWORD:-hubleto}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - app_data:/var/lib/hubleto
+      - uploads:/var/www/hubleto/upload
+      - logs:/var/www/hubleto/log
+    depends_on:
+      db:
+        condition: service_healthy
+
+  app:
+    image: hubleto-app:local
+    build:
+      context: .
+      target: app
+    restart: unless-stopped
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - app_data:/var/lib/hubleto
+      - uploads:/var/www/hubleto/upload
+      - logs:/var/www/hubleto/log
+    depends_on:
+      init:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "php", "docker/healthcheck.php"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+  web:
+    build:
+      context: .
+      target: web
+    restart: unless-stopped
+    ports:
+      # Also change init.environment.HUBLETO_URL when changing the address or port.
+      - "${HUBLETO_BIND:-127.0.0.1}:${HUBLETO_PORT:-8080}:80"
+    volumes:
+      - uploads:/var/www/hubleto/upload:ro
+    depends_on:
+      app:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  scheduler:
+    image: hubleto-app:local
+    build:
+      context: .
+      target: app
+    restart: unless-stopped
+    init: true
+    environment:
+      TZ: ${TZ:-UTC}
+    volumes:
+      - app_data:/var/lib/hubleto
+      - uploads:/var/www/hubleto/upload
+      - logs:/var/www/hubleto/log
+    command:
+      - /bin/sh
+      - -c
+      - |
+        while true; do
+          php cron.php || echo "Hubleto scheduled jobs failed." >&2
+          sleep "$$((60 - $$(date +%s) % 60))"
+        done
+    depends_on:
+      app:
+        condition: service_healthy
+
+volumes:
+  db_data:
+  app_data:
+  uploads:
+  logs:
