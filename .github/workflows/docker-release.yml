@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   packages: write
 
 jobs:
@@ -35,7 +35,7 @@ jobs:
         run: |
           if [ ! -f Dockerfile ]; then
             git fetch --depth=1 origin "$DOCKER_WORKFLOW_SHA"
-            git restore --source=FETCH_HEAD -- Dockerfile .dockerignore docker-compose.yaml docker
+            git restore --source=FETCH_HEAD -- Dockerfile .dockerignore docker
           fi
 
       - name: Set up QEMU
@@ -74,9 +74,3 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
-      - name: Attach client Compose file to the release
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ steps.release.outputs.tag }}
-        run: gh release upload "$RELEASE_TAG" docker-compose.yaml --clobber

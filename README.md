@@ -6,12 +6,12 @@ Free, customizable and self-hosted CRM/ERP. `Vibe-coding ready`
 
 ### Docker Compose (preferred)
 
-Create a directory for your installation and download the latest released Compose file:
+Create a directory for your installation and download the latest Compose file from the repository:
 
 ```sh
 mkdir -p hubleto
 cd hubleto
-curl -fL https://github.com/hubleto/install/releases/latest/download/docker-compose.yaml -o docker-compose.yaml
+curl -fL https://raw.githubusercontent.com/hubleto/install/main/docker-compose.yaml -o docker-compose.yaml
 ```
 
 Edit the settings in `docker-compose.yaml` if needed, then start Hubleto:
