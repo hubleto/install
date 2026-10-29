@@ -20,6 +20,10 @@ adminEmail: erp@mycompany.example.com
 adminPassword: erp
 packagesToInstall: crm,marketing,sales,retail,e-commerce,finance,help,maintenance
 
+### Optional account partners (self-hosted installations default to no partners)
+salesPartnerUid: null
+technicalPartnerUid: null
+
 ### Miscellaneous
 generateDemoData: false
 noPrompt: true
