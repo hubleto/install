@@ -4,7 +4,7 @@ vendor
 log
 composer.lock
 ConfigEnv.php
-!docker/ConfigEnv.php
 upload
 .env
 .env.*
+/data/

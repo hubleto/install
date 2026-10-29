@@ -7,10 +7,12 @@
 .vscode
 .env
 .env.*
+data
+docker-compose*.yaml
+docker-compose*.yml
 vendor
 node_modules
 ConfigEnv.php
-!docker/ConfigEnv.php
 assets
 upload
 log

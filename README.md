@@ -4,29 +4,44 @@ Free, customizable and self-hosted CRM/ERP. `Vibe-coding ready`
 
 ## Installation
 
-### Docker Compose
+### Docker Compose (preferred)
 
-Clone this repository and run:
+Create a directory for your installation and download the latest released Compose file:
+
+```sh
+mkdir -p hubleto
+cd hubleto
+curl -fL https://github.com/hubleto/install/releases/latest/download/docker-compose.yaml -o docker-compose.yaml
+```
+
+Edit the settings in `docker-compose.yaml` if needed, then start Hubleto:
 
 ```sh
 docker compose up -d
 ```
 
 Open http://localhost:8080. The default administrator email is `admin@example.com`;
-find the generated password with `docker compose logs init`.
-The first startup builds the images, installs dependencies, and initializes Hubleto.
-No local PHP, Composer, or Node installation is required.
+find the generated password with `docker compose logs app`.
 
-Nginx, PHP-FPM, MariaDB, and scheduled jobs run in separate containers. A one-time
-initialization service prepares the installation. Database data, configuration,
-secure files, uploads, and logs persist in named volumes.
+```text
+hubleto/
+  docker-compose.yaml
+  data/
+    app/       # configuration and encryption keys
+    db/        # MariaDB database files
+    uploads/   # uploaded files
+    logs/      # application logs
+```
 
-Client settings are defined under each service in [docker-compose.yaml](docker-compose.yaml).
-Set `HUBLETO_ADMIN_PASSWORD` under `init.environment` before the first startup, or leave it empty to
-generate a random password. Environment variables and an optional `.env` file can
-also override the defaults.
-See [Docker deployment documentation](docker/README.md) for server deployment,
-backups, updates, and recovery.
+To update, stop the containers and back up `./data`, then run:
+
+```sh
+docker compose pull
+docker compose up -d
+docker compose exec app php hubleto migrate
+```
+
+To stay on a particular release, replace `latest` in the image name with its release tag.
 
 ### Manual installation
 
