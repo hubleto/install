@@ -1,0 +1,36 @@
+services:
+  app:
+    image: ghcr.io/hubleto/app:latest
+    ports:
+      - "127.0.0.1:8080:80"
+    restart: unless-stopped
+    environment:
+      HUBLETO_URL: http://localhost:8080
+      HUBLETO_ADMIN_EMAIL: admin@example.com
+      HUBLETO_ADMIN_PASSWORD: "" # Empty generates a random password.
+      DB_DATABASE: &db_database "hubleto"
+      DB_USERNAME: &db_username "hubleto"
+      DB_PASSWORD: &db_password "hubleto" # Set the database password here.
+    volumes:
+      - ./data/app:/var/lib/hubleto
+      - ./data/uploads:/var/www/hubleto/upload
+      - ./data/logs:/var/www/hubleto/log
+    depends_on:
+      db:
+        condition: service_healthy
+
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: *db_database
+      MARIADB_USER: *db_username
+      MARIADB_PASSWORD: *db_password
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - ./data/db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 30

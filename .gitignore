@@ -1,6 +1,10 @@
 .vscode
+.idea/
 vendor
 log
 composer.lock
 ConfigEnv.php
 upload
+.env
+.env.*
+/data/

@@ -4,6 +4,47 @@ Free, customizable and self-hosted CRM/ERP. `Vibe-coding ready`
 
 ## Installation
 
+### Docker Compose (preferred)
+
+Create a directory for your installation and download the latest released Compose file:
+
+```sh
+mkdir -p hubleto
+cd hubleto
+curl -fL https://github.com/hubleto/install/releases/latest/download/docker-compose.yaml -o docker-compose.yaml
+```
+
+Edit the settings in `docker-compose.yaml` if needed, then start Hubleto:
+
+```sh
+docker compose up -d
+```
+
+Open http://localhost:8080. The default administrator email is `admin@example.com`;
+find the generated password with `docker compose logs app`.
+
+```text
+hubleto/
+  docker-compose.yaml
+  data/
+    app/       # configuration and encryption keys
+    db/        # MariaDB database files
+    uploads/   # uploaded files
+    logs/      # application logs
+```
+
+To update, stop the containers and back up `./data`, then run:
+
+```sh
+docker compose pull
+docker compose up -d
+docker compose exec app php hubleto migrate
+```
+
+To stay on a particular release, replace `latest` in the image name with its release tag.
+
+### Manual installation
+
 ```
 composer create-project hubleto/install . --stability=YOUR_PREFERRED_STABILITY
 npm install & npm run build
