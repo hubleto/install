@@ -1,0 +1,1 @@
+Hubleto assets should be either copied here from `vendor/hubleto/assets` or compiled witn `npm install & npm run build`.
