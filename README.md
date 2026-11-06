@@ -4,7 +4,9 @@ Free, customizable and self-hosted CRM/ERP. `Vibe-coding ready`
 
 ## Installation
 
-### Docker Compose (preferred)
+You can install Hubleto either as a `docker` container or using PHP's `composer` package manager.
+
+### Docker Compose
 
 Create a directory for your installation and download the latest Compose file from the repository:
 
@@ -43,7 +45,7 @@ docker compose exec app php hubleto migrate
 
 To stay on a particular release, replace `latest` in the image name with its release tag.
 
-### Manual installation
+### Using `composer`
 
 ```
 composer create-project hubleto/install . --stability=YOUR_PREFERRED_STABILITY
@@ -58,23 +60,19 @@ where `YOUR_PREFERRED_STABILITY` can be:
 
 > TIP: Visit https://developer.hubleto.eu for more details.
 
-## Community apps
-
-Community apps are always included.
-
-## Enterprise apps
-
-To install enterprise apps, run `composer require hubleto/enterprise` in the project's folder. If you do not have access to this repository, ask to be a **partner**.
-
 ## External apps
+
+Hubleto always comes with bundle of community apps. However, you may need additional functionality in your project. **External apps** serves exactly this purpose.
 
 To install any external app, run `composer require app-vendor/app-name`. For example to install the `hubleto-linkedin-messages` from `wai-blue`, run `composer require wai-blue/hubleto-linkedin-messages`.
 
 ## Custom apps `vibe-coding ready`
 
-To customize your Hubleto, you need to create `custom` apps. There are two ways to speed it up:
+To customize your Hubleto even more, you may create **custom**`** apps that will be bundling **only within your project**.
 
-  * `RECOMMENDED` **Vibe-code** with the help of use AI agents. Check out [AI agent instructions](ai/instructions.md) or use [this prompt for constraining the agent](https://developer.hubleto.eu/v2/prompts/app-creation-constraints).
+You have several options how to speed up creation of a custom app:
+
+  * **Vibe-code** with the help of use AI agents. Check out [AI agent instructions](ai/instructions.md) or use [this prompt for constraining the agent](https://developer.hubleto.eu/v2/prompts/app-creation-constraints).
   * Use `php hubleto create` CLI tool:
     * Create app's scaffolding: `php hubleto create app CarRental`
     * Create the model: `php hubleto create model CarRental Car`
