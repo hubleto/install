@@ -32,10 +32,10 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "@php vendor/hubleto/assets/bin/symlink-assets-to-public.php"
+            "@php vendor/hubleto/assets/bin/copy-assets-to-public.php"
         ],
         "post-update-cmd": [
-            "@php vendor/hubleto/assets/bin/symlink-assets-to-public.php"
+            "@php vendor/hubleto/assets/bin/copy-assets-to-public.php"
         ]
     },
     "minimum-stability": "dev"
