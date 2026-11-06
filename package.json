@@ -1,12 +1,12 @@
 {
   "type": "module",
   "scripts": {
-    "build-css": "npx @tailwindcss/cli -i ./src/Main.twcss -o ./assets/compiled/css/main.css",
-    "watch-css": "npx @tailwindcss/cli --watch -i ./src/Main.twcss -o ./assets/compiled/css/main.css",
+    "build-css": "npx @tailwindcss/cli -i ./src/Main.twcss -o ./public/assets/compiled/css/main.css",
+    "watch-css": "npx @tailwindcss/cli --watch -i ./src/Main.twcss -o ./public/assets/compiled/css/main.css",
     "build-js": "npx webpack --mode development --config vendor/hubleto/assets/webpack.config.js",
     "watch-js": "npx webpack --watch --mode development --config vendor/hubleto/assets/webpack.config.js",
-    "build": "npx webpack --mode development --config vendor/hubleto/assets/webpack.config.js && npx @tailwindcss/cli -m -i ./src/Main.twcss -o ./assets/compiled/css/main.css",
-    "build:prod": "npx webpack --mode production  && npx @tailwindcss/cli -m -i ./src/Main.twcss -o ./assets/compiled/css/main.css"
+    "build": "npx webpack --mode development --config vendor/hubleto/assets/webpack.config.js && npx @tailwindcss/cli -m -i ./src/Main.twcss -o ./public/assets/compiled/css/main.css",
+    "build:prod": "npx webpack --mode production  && npx @tailwindcss/cli -m -i ./src/Main.twcss -o ./public/assets/compiled/css/main.css"
   },
   "dependencies": {
     "@babel/preset-react": "^8",

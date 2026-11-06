@@ -90,7 +90,7 @@ externalApps.map((app) => {
 })
 
 // ===== outputPath =====
-const outputPath = path.resolve(__dirname, 'assets/compiled/js');
+const outputPath = path.resolve(__dirname, 'public/assets/compiled/js');
 
 // ===== modules =====
 const modules = [
