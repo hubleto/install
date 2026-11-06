@@ -30,7 +30,7 @@ try {
         'releaseFolder' => $project,
         'rewriteBase' => '/',
         'projectUrl' => $url,
-        'assetsUrl' => "$url/vendor/hubleto/assets",
+        'assetsUrl' => "$url/public/assets",
         'uploadUrl' => "$url/upload",
         'uploadFolder' => "$project/upload",
         'logFolder' => "$project/log",

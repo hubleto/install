@@ -1,5 +1,14 @@
 RewriteEngine On
 
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ index.php?route=$1&%{QUERY_STRING}
+# Block direct access to dotfiles/dot-directories (.env, .env.*, .git, .sops.yaml, ...)
+RewriteRule (^|/)\. - [F,L]
+
+# Block direct access to application logs
+RewriteRule ^logs/ - [F,L]
+
+# The app now lives under public/, which should be set as this (sub)domain's
+# document root at the hosting level. This fallback forwards requests into
+# public/ for setups where the document root can't be repointed there.
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ public/index.php?route=$1&%{QUERY_STRING} [L]
+

@@ -30,5 +30,13 @@
             "HubletoProject\\Dependency\\": "src/dependencies"
         }
     },
+    "scripts": {
+        "post-install-cmd": [
+            "@php vendor/hubleto/assets/bin/symlink-assets-to-public.php"
+        ],
+        "post-update-cmd": [
+            "@php vendor/hubleto/assets/bin/symlink-assets-to-public.php"
+        ]
+    },
     "minimum-stability": "dev"
 }

@@ -1,0 +1,6 @@
+location /hubleto/ {
+  rewrite ^/hubleto/?$ /hubleto/public/index.php?$args last;
+  if (!-e $request_filename) {
+    rewrite ^/hubleto/(.*)$ /hubleto/public/index.php?route=$1&$args last;
+  }
+}
