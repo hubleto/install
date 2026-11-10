@@ -30,10 +30,5 @@
             "HubletoProject\\Dependency\\": "src/dependencies"
         }
     },
-    "scripts": {
-        "post-install-cmd": [
-            "@php vendor/hubleto/assets/bin/copy-assets-to-public.php"
-        ]
-    },
     "minimum-stability": "dev"
 }
