@@ -86,7 +86,7 @@ externalApps.map((app) => {
   const appName = Object.keys(psr4)[0]
     .replaceAll('\\', '/')
     .replace('Hubleto/App/External/', '')
-    .replace(/\/$/g, '')
+    .replace(/\//g, '')
   ;
   entries['external/' + appName] = { import: app, dependOn: 'main' };
 })
