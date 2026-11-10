@@ -71,7 +71,7 @@ logYellow(
 // ===== entries =====
 
 let entries = {
-  main: '../hubleto/src/assets/src/Main.tsx',
+  main: './src/Main.tsx',
 };
 
 communityApps.map((app) => {

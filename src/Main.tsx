@@ -36,12 +36,7 @@ import InputWysiwyg from "@hubleto/react-ui/components/cc/Inputs/Wysiwyg";
 import InputTextareaWithHtmlPreview from "@hubleto/react-ui/components/fc/Inputs/TextareaWithHtmlPreview";
 import InputJson from "@hubleto/react-ui/components/cc/Inputs/Json";
 import InputJsonKeyValue from "@hubleto/react-ui/components/cc/Inputs/JsonKeyValue";
-
-// import TableCellRendererHyperlink from "@hubleto/react-ui/components/cc/TableCellRenderers/Hyperlink";
-// import TableCellRendererSharedWith from "@hubleto/react-ui/components/cc/TableCellRenderers/SharedWith";
-// import FormExtended from "@hubleto/react-ui/components/cc/FormExtended";
-// import TableExtended from "@hubleto/react-ui/components/cc/TableExtended";
-// import TableExtendedColumnCustomize from "@hubleto/react-ui/components/cc/TableExtendedColumnsCustomize";
+import InputTextareaMarkdown from "@hubleto/react-ui/components/fc/Inputs/TextareaMarkdown";
 
 try {
 
@@ -54,6 +49,7 @@ try {
     user: any;
     users: any;
     apps: any = {};
+    debugTranslations: boolean = false;
 
     constructor(config: any) {
       super(config);
@@ -63,6 +59,7 @@ try {
       this.isPremium = config.isPremium;
       this.language = config.language;
       this.dictionary = globalThis.dictionary;
+      this.debugTranslations = config.debugTranslations;
 
       this.registerReactComponent('Modal', Modal);
 
@@ -80,6 +77,7 @@ try {
       this.registerReactComponent('InputTextareaWithHtmlPreview', InputTextareaWithHtmlPreview);
       this.registerReactComponent('InputJson', InputJson);
       this.registerReactComponent('InputJsonKeyValue', InputJsonKeyValue);
+      this.registerReactComponent('InputTextareaMarkdown', InputTextareaMarkdown);
 
       // Hubleto components
       this.registerReactComponent('Search', ErpSearch);
@@ -102,6 +100,23 @@ try {
         // console.log('Init app ' + appNamespace);
         this.apps[appNamespace].init();
       }
+    }
+
+    userHasRole(idRole: number) {
+      if (!this.users) return false;
+
+      const user = this.users[this.idUser];
+      if (!user) return false;
+
+      let hasRole = user.HAS_ALL_GRANTED;
+
+      if (user.ROLES) {
+        user.ROLES.map((role) => {
+          if (role.id == idRole) hasRole = true;
+        })
+      }
+
+      return hasRole;
     }
 
     translate(orig: string, context?: string, contextInner?: string, vars?: any): string {
@@ -154,6 +169,7 @@ try {
     }
 
     addToDictionary(orig: string, context: string, contextInner: string) {
+      if (!this.debugTranslations) return;
       request.get(
         'api/dictionary',
         {
