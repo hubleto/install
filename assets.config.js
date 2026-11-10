@@ -60,6 +60,7 @@ if (fs.existsSync(vendorFolder) && fs.lstatSync(vendorFolder).isDirectory()) {
   });
 }
 
+logYellow('');
 logYellow('APPS');
 logYellow(
     communityApps.length + ' community, '
