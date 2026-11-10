@@ -49,7 +49,6 @@ To stay on a particular release, replace `latest` in the image name with its rel
 
 ```
 composer create-project hubleto/install . --stability=YOUR_PREFERRED_STABILITY
-npm install & npm run build
 php hubleto init
 ```
 
@@ -60,13 +59,19 @@ where `YOUR_PREFERRED_STABILITY` can be:
 
 > TIP: Visit https://developer.hubleto.eu for more details.
 
-## External apps
+## Custom development
+
+If you want to customize Hubleto, you have two options: either reuse existing `external` apps or create your own `custom` app.
+
+Before you start, you need to download javascript packages and compile assets with `npm install & npm run build`.
+
+### External apps
 
 Hubleto always comes with bundle of community apps. However, you may need additional functionality in your project. **External apps** serves exactly this purpose.
 
 To install any external app, run `composer require app-vendor/app-name`. For example to install the `hubleto-linkedin-messages` from `wai-blue`, run `composer require wai-blue/hubleto-linkedin-messages`.
 
-## Custom apps `vibe-coding ready`
+### Custom apps `vibe-coding ready`
 
 To customize your Hubleto even more, you may create **custom**`** apps that will be bundling **only within your project**.
 
