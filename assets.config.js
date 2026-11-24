@@ -71,11 +71,11 @@ logYellow(
 // ===== entries =====
 
 let entries = {
-  main: './src/Main.tsx',
+  main: './vendor/hubleto/assets/src/Main.tsx',
 };
 
 communityApps.map((app) => {
-  const appName = /\/(.*?)\/Loader/.exec(app)[1];
+  const appName = path.basename(path.dirname(app));
   entries['community/' + appName] = { import: app, dependOn: 'main' };
 })
 
